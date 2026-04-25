@@ -1,0 +1,1255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusthakalaya Premium Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #072743;
+            --light-bg: #c3e4e9;
+            --accent-purple: #6a0dad;
+            --accent-blue: #1e3a8a;
+            --accent-light: #8b5cf6;
+            --text-light: #f8fafc;
+            --text-dark: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --border: #475569;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, var(--primary-dark), #1e3a8a);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Snowfall effect */
+        .snowflake {
+            position: fixed;
+            top: -20px;
+            z-index: 9999;
+            user-select: none;
+            pointer-events: none;
+            color: #fff;
+            font-size: 1em;
+            text-shadow: 0 0 5px #fff;
+            animation: fall linear forwards, sway ease-in-out infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+        @keyframes sway {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(20px);
+            }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent-light);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .branding {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-section, .results-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i {
+            color: var(--accent-light);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(30, 41, 59, 0.7);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 13, 173, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .results-container {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .result-value {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 10px;
+            border-radius: 6px;
+            word-break: break-all;
+            position: relative;
+            font-family: monospace;
+            white-space: pre-line;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: rgba(139, 92, 246, 0.2);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background: rgba(139, 92, 246, 0.4);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification.success {
+            background: var(--success);
+        }
+        .notification.error {
+            background: var(--error);
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 20px 0;
+        }
+        .footer-link {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .progress-container {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .id-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .id-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .id-list::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+        .id-list::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 4px;
+        }
+        .id-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .id-value {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        .id-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            background: rgba(139, 92, 246, 0.4);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-active {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+        .status-inactive {
+            background: var(--error);
+        }
+        .status-pending {
+            background: var(--warning);
+        }
+        .status-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .premium-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(45deg, #f59e0b, #f97316);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(5deg);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        /* Hidden PDF content */
+        #pdf-preview {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .pdf-content {
+            width: 750px;
+            padding: 40px 50px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: white;
+            position: relative;
+            line-height: 1.5;
+        }
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .pdf-header img {
+            height: 100px;
+        }
+        .pdf-title {
+            text-align: center;
+            font-size: 24px;
+            margin: 15px 0;
+            color: #000;
+            font-weight: bold;
+        }
+        .invoice-meta {
+            text-align: center;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .invoice-details {
+            margin: 20px 0 20px;
+        }
+        .invoice-details p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .label {
+            display: inline-block;
+            width: 170px;
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            display: inline;
+            color: #000;
+        }
+        .pricing-table {
+            margin: 15px 0 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pricing-table td {
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        .pricing-table .total-row td {
+            font-weight: bold;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+        .qr-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .qr-section img {
+            width: 110px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+        }
+        .signature-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .signature-section img {
+            height: 50px;
+            margin-bottom: 5px;
+        }
+        .signature-section p {
+            font-style: normal;
+            color: #555;
+            font-size: 14px;
+            margin: 0;
+        }
+        .pdf-footer {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .radio-option input {
+            width: auto;
+        }
+        .radio-option label {
+            margin: 0;
+        }
+        .phone-error {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="premium-badge">MANAGER</div>
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h1>Pusthakalaya Premium Manager</h1>
+            </div>
+            <div class="branding">
+                <i class="fas fa-mountain"></i>
+                <span>Team Ceylon Tech Crew 🇱🇰</span>
+                <i class="fas fa-mountain"></i>
+            </div>
+        </header>
+        <div class="content">
+            <!-- ID Generation Form -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-id-card"></i> ID Generation Form</h2>
+                <form id="generationForm">
+                    <div class="form-group">
+                        <label for="numUsers">Number of Premium Users (1-999)</label>
+                        <input type="number" id="numUsers" min="1" max="999" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="07xxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plan">Selected Plan</label>
+                        <select id="plan" required>
+                            <option value="">Select a plan</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                            <option value="lifetime">Lifetime</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminId">Admin ID</label>
+                        <select id="adminId" required>
+                            <option value="">Select admin</option>
+                            <option value="admin1">admin1</option>
+                            <option value="admin2">admin2</option>
+                            <option value="admin3">admin3</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" id="generateBtn">
+                        <i class="fas fa-cogs"></i> Generate Premium IDs
+                    </button>
+                </form>
+            </div>
+            <!-- Generated IDs Results -->
+            <div class="results-section">
+                <h2 class="section-title"><i class="fas fa-receipt"></i> Generated Premium IDs</h2>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="results-container">
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Reference Code</span>
+                            <button class="copy-btn" onclick="copyToClipboard('refCode')">Copy</button>
+                        </div>
+                        <div class="result-value" id="refCode">Not generated yet</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Generated IDs</span>
+                            <span class="status-text">
+                                <span class="status-indicator status-inactive" id="statusIndicator"></span>
+                                <span id="statusText">Not generated</span>
+                            </span>
+                        </div>
+                        <div class="result-value">
+                            <div class="id-list" id="idList">
+                                <div class="id-item">
+                                    <div class="id-value">No IDs generated yet</div>
+                                    <div class="id-actions">
+                                        <button class="action-btn" title="Copy" onclick="copyToClipboardValue('No IDs generated yet')"><i class="fas fa-copy"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Official Message</span>
+                            <button class="copy-btn" onclick="copyToClipboard('officialMessage')">Copy</button>
+                        </div>
+                        <div class="result-value" id="officialMessage">Fill the form to generate official message</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <!-- Invoice Generator Form -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-file-invoice"></i> Invoice Generator</h2>
+                <form id="invoice-form">
+                    <div class="form-group">
+                        <label for="invoiceName">Full Name</label>
+                        <input type="text" id="invoiceName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="premiumStart">Premium Start Date</label>
+                        <input type="date" id="premiumStart" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="invoicePlan">Select Plan</label>
+                        <select id="invoicePlan" required>
+                            <option value="">-- Choose Plan --</option>
+                            <option value="Monthly">Monthly (LKR 799)</option>
+                            <option value="Yearly">Yearly (LKR 2,679)</option>
+                            <option value="Lifetime">Lifetime (LKR 6,299)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Discount (%)</label>
+                        <input type="number" id="discount" min="0" max="100" placeholder="e.g. 10 for 10%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="premiumEnd">Premium End Date</label>
+                        <input type="text" id="premiumEnd" readonly placeholder="Auto-filled" />
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Status</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="status-paid" name="status" value="PAID" checked />
+                                <label for="status-paid" style="font-weight:normal;">Paid</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="status-unpaid" name="status" value="UNPAID" />
+                                <label for="status-unpaid" style="font-weight:normal;">Unpaid</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceAdminId">Admin ID</label>
+                        <select id="invoiceAdminId" required>
+                            <option value="">-- Select Admin --</option>
+                            <option value="admin1">admin1</option>
+                            <option value="admin2">admin2</option>
+                            <option value="admin3">admin3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userId">User ID</label>
+                        <input type="text" id="userId" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="invoicePhone">Phone Number</label>
+                        <input type="tel" id="invoicePhone" required placeholder="07xxxxxxxx" />
+                        <div class="phone-error" id="phone-error">Phone number must start with 077, 076, or 074</div>
+                    </div>
+                    <button type="button" class="btn" id="generateInvoiceBtn">
+                        <i class="fas fa-file-download"></i> Generate & Download Invoice
+                    </button>
+                </form>
+            </div>
+            <!-- Invoice Results -->
+            <div class="results-section">
+                <h2 class="section-title"><i class="fas fa-receipt"></i> Invoice Preview</h2>
+                <div class="results-container">
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Invoice Number</span>
+                            <button class="copy-btn" onclick="copyToClipboard('pdf-invoice-no')">Copy</button>
+                        </div>
+                        <div class="result-value" id="pdf-invoice-no">Not generated yet</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Subtotal</span>
+                            <button class="copy-btn" onclick="copyToClipboard('subtotalValue')">Copy</button>
+                        </div>
+                        <div class="result-value" id="subtotalValue">LKR 0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Discount</span>
+                            <button class="copy-btn" onclick="copyToClipboard('discountValue')">Copy</button>
+                        </div>
+                        <div class="result-value" id="discountValue">0%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Total Amount</span>
+                            <button class="copy-btn" onclick="copyToClipboard('totalValue')">Copy</button>
+                        </div>
+                        <div class="result-value" id="totalValue">LKR 0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Invoice Data</span>
+                            <button class="copy-btn" onclick="copyToClipboard('invoiceData')">Copy</button>
+                        </div>
+                        <div class="result-value" id="invoiceData">Fill the form to generate invoice data</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">
+                            <span>Download Invoice</span>
+                            <button class="copy-btn" onclick="downloadInvoice()">Download</button>
+                        </div>
+                        <div class="result-value">Click "Download" to get the PDF invoice</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <footer>
+            <div class="footer-content">
+                <p>© 2025 Pusthakalaya Premium Manager. All rights reserved.</p>
+                <p>Powered by <a href="https://gorgeous-pegasus-b200d5.netlify.app/" class="footer-link" target="_blank">Team Ceylon</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Hidden printable content for PDF -->
+    <div id="pdf-preview">
+        <div class="pdf-content" id="pdf-content">
+            <div class="pdf-header">
+                <img src="https://i.postimg.cc/wv5JYJW2/Postwizz-10042026-213759089.jpg" alt="Pusthakalaya Logo" />
+            </div>
+            <div class="pdf-title">Payment Invoice</div>
+            <div class="invoice-meta">
+                <span id="pdf-invoice-no-preview">INV-XXXXXX</span> • 
+                <span id="pdf-timestamp">17 Oct 2025, 14:30</span>
+            </div>
+            <div class="invoice-details">
+                <p><span class="label">Customer Name:</span> <span class="value" id="pdf-name"></span></p>
+                <p><span class="label">Plan Type:</span> <span class="value" id="pdf-plan"></span></p>
+                <p><span class="label">Service Period:</span> <span class="value" id="pdf-period"></span></p>
+                <p><span class="label">Admin ID:</span> <span class="value" id="pdf-admin"></span></p>
+                <p><span class="label">User ID:</span> <span class="value" id="pdf-user"></span></p>
+                <p><span class="label">Phone Number:</span> <span class="value" id="pdf-phone"></span></p>
+                <p><span class="label">Status:</span> <span class="value"><span id="pdf-status" class="status-badge">PAID</span></span></p>
+            </div>
+            <!-- Professional Pricing Table -->
+            <table class="pricing-table" id="pdf-pricing">
+                <!-- Filled by JS -->
+            </table>
+            <!-- QR Code -->
+            <div class="qr-section">
+                <img src="https://i.postimg.cc/y6vgh721/image-1776539002764.png" alt="QR Code" />
+            </div>
+            <div class="signature-section">
+                <img src="https://i.postimg.cc/t4Sq2QYr/signature.png" alt="Signature" />
+                <p>Owner of Learny App</p>
+            </div>
+            <div class="pdf-footer">
+                Powered by Team Learny
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Operation completed successfully</span>
+    </div>
+
+    <script>
+        // Create snowfall effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.innerHTML = '❄';
+            snowflake.classList.add('snowflake');
+            // Random position
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            // Random size
+            const size = Math.random() * 1.5 + 0.5;
+            snowflake.style.fontSize = size + 'em';
+            // Random opacity
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            // Random animation duration
+            const duration = Math.random() * 5 + 5;
+            snowflake.style.animationDuration = duration + 's';
+            // Random animation delay
+            const delay = Math.random() * 5;
+            snowflake.style.animationDelay = delay + 's';
+            document.body.appendChild(snowflake);
+            // Remove snowflake after animation completes
+            setTimeout(() => {
+                snowflake.remove();
+            }, duration * 1000);
+        }
+        // Create snowflakes periodically
+        setInterval(createSnowflake, 300);
+
+        // Auto-fill end date and subtotal
+        const startDateInput = document.getElementById('premiumStart');
+        const planSelect = document.getElementById('invoicePlan');
+        const endDateInput = document.getElementById('premiumEnd');
+        const discountInput = document.getElementById('discount');
+        const phoneInput = document.getElementById('invoicePhone');
+        const phoneError = document.getElementById('phone-error');
+        
+        function updateEndDate() {
+            const startDate = startDateInput.value;
+            const plan = planSelect.value;
+            if (!startDate || !plan) {
+                endDateInput.value = '';
+                return;
+            }
+            if (plan === 'Lifetime') {
+                endDateInput.value = 'Lifetime Access';
+                return;
+            }
+            const start = new Date(startDate);
+            let end;
+            if (plan === 'Monthly') {
+                end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+            } else if (plan === 'Yearly') {
+                end = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate());
+            }
+            const pad = n => n.toString().padStart(2, '0');
+            endDateInput.value = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
+        }
+        
+        // Add event listeners
+        startDateInput.addEventListener('change', updateEndDate);
+        planSelect.addEventListener('change', updateEndDate);
+        discountInput.addEventListener('input', updateEndDate);
+        
+        // Phone number validation
+        phoneInput.addEventListener('input', function() {
+            const phone = phoneInput.value;
+            const isValid = /^07(7|6|4)\d{7}$/.test(phone);
+            
+            if (phone.length > 0 && !isValid) {
+                phoneError.style.display = 'block';
+                phoneInput.style.borderColor = 'var(--error)';
+            } else {
+                phoneError.style.display = 'none';
+                phoneInput.style.borderColor = 'var(--border)';
+            }
+        });
+
+        // Generate invoice number
+        function generateInvoiceNumber() {
+            const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            const key = `inv_seq_${today}`;
+            let seq = localStorage.getItem(key);
+            if (seq === null) seq = 0;
+            seq = parseInt(seq) + 1;
+            localStorage.setItem(key, seq);
+            return `INV-${today}-${String(seq).padStart(3, '0')}`;
+        }
+        
+        function formatLKR(amount) {
+            return new Intl.NumberFormat('en-LK', {
+                style: 'currency',
+                currency: 'LKR',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // PDF generation
+        const { jsPDF } = window.jspdf;
+        document.getElementById('generateInvoiceBtn').addEventListener('click', async (e) => {
+            // Validate phone number
+            const phone = phoneInput.value;
+            if (!/^07(7|6|4)\d{7}$/.test(phone)) {
+                showNotification('Phone number must start with 077, 076, or 074', 'error');
+                return;
+            }
+            
+            const plan = planSelect.value;
+            const basePrices = { Monthly: 799, Yearly: 2679, Lifetime: 6299 };
+            const subtotal = basePrices[plan] || 0;
+            let discountPercent = parseFloat(discountInput.value) || 0;
+            if (discountPercent < 0) discountPercent = 0;
+            if (discountPercent > 100) discountPercent = 100;
+            const discountAmount = subtotal * (discountPercent / 100);
+            const total = subtotal - discountAmount;
+            const status = document.querySelector('input[name="status"]:checked').value;
+            const data = {
+                name: document.getElementById('invoiceName').value,
+                start: startDateInput.value,
+                end: endDateInput.value,
+                adminId: document.getElementById('invoiceAdminId').value,
+                userId: document.getElementById('userId').value,
+                phone: phone,
+                plan: plan,
+                subtotal: subtotal,
+                discountPercent: discountPercent,
+                discountAmount: discountAmount,
+                total: total,
+                status: status
+            };
+            if (!data.start || !data.plan) {
+                showNotification('Please select a start date and plan.', 'error');
+                return;
+            }
+
+            const fmtDate = (d) => {
+                if (d === 'Lifetime Access') return d;
+                const date = new Date(d);
+                return isNaN(date) ? d : date.toLocaleDateString('en-GB');
+            };
+            const now = new Date();
+            const timestamp = now.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Fill static fields
+            document.getElementById('pdf-invoice-no-preview').textContent = generateInvoiceNumber();
+            document.getElementById('pdf-timestamp').textContent = timestamp;
+            document.getElementById('pdf-name').textContent = data.name;
+            document.getElementById('pdf-plan').textContent = data.plan;
+            document.getElementById('pdf-period').textContent = data.plan === 'Lifetime'
+                ? 'Lifetime Access'
+                : `${new Date(data.start).toLocaleDateString('en-GB')} – ${fmtDate(data.end)}`;
+            document.getElementById('pdf-admin').textContent = data.adminId;
+            document.getElementById('pdf-user').textContent = data.userId;
+            document.getElementById('pdf-phone').textContent = data.phone;
+            const statusEl = document.getElementById('pdf-status');
+            statusEl.textContent = data.status;
+            statusEl.style.backgroundColor = data.status === 'PAID' ? '#27ae60' : '#e74c3c';
+
+            // Build pricing table
+            const pricingTable = document.getElementById('pdf-pricing');
+            let rows = `
+                <tr>
+                    <td>Subtotal:</td>
+                    <td align="right">${formatLKR(data.subtotal)}</td>
+                </tr>
+            `;
+            if (data.discountPercent > 0) {
+                rows += `
+                    <tr>
+                        <td>Discount (${data.discountPercent.toFixed(0)}%):</td>
+                        <td align="right">-${formatLKR(data.discountAmount)}</td>
+                    </tr>
+                `;
+            }
+            rows += `
+                <tr class="total-row">
+                    <td>Total:</td>
+                    <td align="right">${formatLKR(data.total)}</td>
+                </tr>
+            `;
+            pricingTable.innerHTML = rows;
+
+            // Update results section
+            document.getElementById('pdf-invoice-no').textContent = generateInvoiceNumber();
+            document.getElementById('subtotalValue').textContent = formatLKR(data.subtotal);
+            document.getElementById('discountValue').textContent = `${data.discountPercent}%`;
+            document.getElementById('totalValue').textContent = formatLKR(data.total);
+            document.getElementById('invoiceData').textContent = `Customer: ${data.name}\nPlan: ${data.plan}\nTotal: ${formatLKR(data.total)}\nStatus: ${data.status}`;
+
+            // Show loading state on button
+            const btn = document.getElementById('generateInvoiceBtn');
+            btn.innerHTML = '<div class="loading"></div> Generating PDF...';
+            btn.disabled = true;
+
+            try {
+                // Optimized PDF render
+                const el = document.getElementById('pdf-content');
+                const canvas = await html2canvas(el, {
+                    scale: 1.2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: null
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 0.85);
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (canvas.height * width) / canvas.width;
+                pdf.addImage(imgData, 'JPEG', 0, 0, width, Math.min(height, 290));
+                pdf.save(`Pusthakalaya_Invoice_${data.name.replace(/\s+/g, '_')}.pdf`);
+
+                // Show success notification
+                showNotification('Invoice generated and downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                showNotification('Error generating PDF: ' + error.message, 'error');
+            } finally {
+                // Reset button
+                btn.innerHTML = '<i class="fas fa-file-download"></i> Generate & Download Invoice';
+                btn.disabled = false;
+            }
+        });
+
+        // Download invoice function
+        async function downloadInvoice() {
+            const invoiceNo = document.getElementById('pdf-invoice-no').textContent;
+            if (invoiceNo === 'Not generated yet') {
+                showNotification('Please generate an invoice first', 'error');
+                return;
+            }
+
+            try {
+                const el = document.getElementById('pdf-content');
+                const canvas = await html2canvas(el, {
+                    scale: 1.2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: null
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 0.85);
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (canvas.height * width) / canvas.width;
+                pdf.addImage(imgData, 'JPEG', 0, 0, width, Math.min(height, 290));
+                pdf.save(`Pusthakalaya_Invoice_${invoiceNo}.pdf`);
+                showNotification('Invoice downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                showNotification('Error downloading invoice: ' + error.message, 'error');
+            }
+        }
+
+        // Form submission handler for ID generation
+        document.getElementById('generationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const numUsers = document.getElementById('numUsers').value;
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const plan = document.getElementById('plan').value;
+            const adminId = document.getElementById('adminId').value;
+            // Validate inputs
+            if (!numUsers || !fullName || !phone || !email || !plan || !adminId) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            if (numUsers < 1 || numUsers > 999) {
+                showNotification('Number of users must be between 1 and 999', 'error');
+                return;
+            }
+            // Validate phone number format (07xxxxxxxx)
+            const phoneRegex = /^07(7|6|4)\d{7}$/;
+            if (!phoneRegex.test(phone)) {
+                showNotification('Phone number must start with 077, 076, or 074 and be 10 digits', 'error');
+                return;
+            }
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            // Disable button and show loading
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="loading"></div> Generating...';
+            // Update status
+            document.getElementById('statusIndicator').className = 'status-indicator status-pending';
+            document.getElementById('statusText').textContent = 'Generating...';
+            // Simulate processing time
+            setTimeout(() => {
+                // Generate reference code
+                const refCode = generateRandomString(10);
+                document.getElementById('refCode').textContent = refCode;
+                // Generate IDs based on plan
+                const ids = [];
+                for (let i = 0; i < parseInt(numUsers); i++) {
+                    ids.push(generatePremiumId(plan));
+                }
+                // Display generated IDs
+                displayGeneratedIds(ids);
+                // Generate official message with new format including email and phone
+                const timestamp = new Date().toLocaleString();
+                const officialMessage = `Congratulations ${fullName}!
+`
+                    + `You are the ${numUsers} Premium User
+`
+                    + `Premium ID: ${ids.join(', ')}
+`
+                    + `Plan: ${plan.charAt(0).toUpperCase() + plan.slice(1)}
+`
+                    + `Phone: ${phone}
+`
+                    + `Email: ${email}
+`
+                    + `Admin: ${adminId}
+`
+                    + `Generated: ${timestamp}
+`
+                    + `Reference Code: ${refCode}`;
+                document.getElementById('officialMessage').textContent = officialMessage;
+                // Update status
+                document.getElementById('statusIndicator').className = 'status-indicator status-active';
+                document.getElementById('statusText').textContent = 'Generated';
+                // Send the official message to Telegram bot
+                sendToTelegramBot(officialMessage);
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-cogs"></i> Generate Premium IDs';
+                // Show success notification
+                showNotification(`${numUsers} premium IDs generated successfully!`, 'success');
+                // Update progress bar
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 2000);
+            }, 2000);
+        });
+        
+        // Generate premium ID based on plan
+        function generatePremiumId(plan) {
+            let id = '';
+            // Create 8 character ID with specific rules
+            for (let i = 0; i < 8; i++) {
+                if (i === 1) {
+                    id += 'd'; // 2nd character is 'd'
+                } else if (i === 5) {
+                    id += '8'; // 6th character is '8'
+                } else if (i === 6) {
+                    if (plan === 'yearly') id += 'g'; // 7th character is 'g' for yearly
+                    else if (plan === 'monthly') id += 'h'; // 7th character is 'h' for monthly
+                    else if (plan === 'lifetime') id += 'j'; // 7th character is 'j' for lifetime
+                } else {
+                    // Random lowercase letter or number
+                    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                    id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+            }
+            return id;
+        }
+        
+        // Generate random string
+        function generateRandomString(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Display generated IDs
+        function displayGeneratedIds(ids) {
+            const idList = document.getElementById('idList');
+            idList.innerHTML = '';
+            ids.forEach(id => {
+                const idItem = document.createElement('div');
+                idItem.className = 'id-item';
+                idItem.innerHTML = `
+                    <div class="id-value">${id}</div>
+                    <div class="id-actions">
+                        <button class="action-btn" title="Copy" onclick="copyToClipboardValue('${id}')"><i class="fas fa-copy"></i></button>
+                        <button class="action-btn" title="Status"><i class="fas fa-check-circle"></i></button>
+                    </div>
+                `;
+                idList.appendChild(idItem);
+            });
+        }
+        
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy: ' + err, 'error');
+            });
+        }
+        
+        // Copy specific value to clipboard
+        function copyToClipboardValue(value) {
+            navigator.clipboard.writeText(value).then(() => {
+                showNotification('ID copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy: ' + err, 'error');
+            });
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Send the official message to Telegram bot
+        function sendToTelegramBot(officialMessage) {
+            const botToken = '8550227272:AAH-BMGczdqHbS8YS_dG39NozhCgTDjRPck';
+            const chatId = '1667542409';
+            // Prepare the URL for Telegram Bot API
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            // Prepare the request body
+            const body = {
+                chat_id: chatId,
+                text: officialMessage,
+                parse_mode: 'HTML'
+            };
+            // Send the request to Telegram Bot API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log('Official message sent to Telegram successfully');
+                    showNotification('Official message sent to Telegram bot!', 'success');
+                } else {
+                    console.error('Error sending message to Telegram:', data);
+                    showNotification('Failed to send to Telegram bot', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message to Telegram:', error);
+                showNotification('Error sending to Telegram bot', 'error');
+            });
+        }
+        
+        // Initialize with some example data
+        document.getElementById('fullName').value = 'Dilakshana';
+        document.getElementById('phone').value = '0771234567';
+        document.getElementById('email').value = 'dilakshana@example.com';
+    </script>
+</body>
+</html>
