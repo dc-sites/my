@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c2bd9">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-512.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learny - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">L</div>
+                <div class="sidebar-title">Learny</div>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active"><a href="index.html"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="bot.html"><i class="fa fa-brain"></i> LearnyAI</a></li>
+                <li class="nav-item"><a href="tasks.html"><i class="fa fa-tasks"></i> Tasks</a></li>
+                <li class="nav-item"><a href="time.html"><i class="fa fa-clock"></i> Time Tracker</a></li>
+                <li class="nav-item"><a href="achievements.html"><i class="fa fa-trophy"></i> Achievements</a></li>
+                <li class="nav-item"><a href="motivation.html"><i class="fa fa-lightbulb"></i> Motivation</a></li>
+                <li class="nav-item"><a href="music.html"><i class="fa fa-music"></i> Music</a></li>
+                <li class="nav-item"><a href="pomodoro.html"><i class="fa fa-stopwatch"></i> Pomodoro</a></li>
+                <li class="nav-item"><a href="mark.html"><i class="fa fa-chart-line"></i> Mark Analyze</a></li>
+                <li class="nav-item"><a href="pastpapers.html"><i class="fa fa-file-alt"></i> Past Papers</a></li>
+                <li class="nav-item"><a href="countdown.html"><i class="fa fa-hourglass-half"></i> Countdown</a></li>
+                <li class="nav-item"><a href="settings.html"><i class="fa fa-cog"></i> Settings</a></li>
+                <li class="nav-item"><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                <li class="nav-item"><a href="rate.html"><i class="fa fa-star"></i> Rate Us</a></li>
+            </ul>
+            <div class="sidebar-welcome">
+                <p id="sidebar-username">Welcome, User!</p>
+                <div class="divider"></div>
+               
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <button class="hamburger"><i class="fa fa-bars"></i></button>
+                <h1 class="page-title"><i class="fa fa-tachometer"></i> Dashboard</h1>
+                <div class="header-actions">
+                    
+                    <button class="theme-toggle"><i class="fa fa-moon"></i></button>
+                </div>
+            </header>
+
+            <!-- Greeting Banner -->
+            <div class="card greeting-banner mb-3">
+                <div class="greeting-content">
+                    <img src="https://i.postimg.cc/QdPYLqrV/AIRetouch-20260412-135002012.png" alt="Avatar" class="greeting-avatar" id="dashboard-avatar">
+                    <div class="greeting-text-container">
+                        <h2 class="greeting-full" id="greeting-full">Good morning, User</h2>
+                        <p class="greeting-sub" id="greeting-sub">Let's start learning 🎯</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa fa-tasks"></i></div>
+                    <div class="stat-info">
+                        <h3 id="today-tasks-count">0</h3>
+                        <p>Today Tasks</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa fa-fire"></i></div>
+                    <div class="stat-info">
+                        <h3 id="day-streak">0</h3>
+                        <p>Day Streak</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fa fa-clock"></i></div>
+                    <div class="stat-info">
+                        <h3 id="avg-hours">0h</h3>
+                        <p>Average Hours</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fa fa-chart-area"></i></div>
+                    <div class="stat-info">
+                        <h3 id="total-study-hours">0h</h3>
+                        <p>Total Hours</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts & Tasks -->
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-chart-bar"></i> Study Hours (10 Days)</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="studyChart" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                       <h2 class="card-title"><i class="fa fa-tasks"></i> Today Tasks</h2>
+                        <a href="tasks.html" class="btn btn-sm btn-secondary">Manage</a>
+                    </div>
+                    <div class="task-list" id="today-tasks-list">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Countdowns & Quick Stats -->
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa fa-hourglass-half"></i> Exam Countdowns</h2>
+                        <a href="countdown.html" class="btn btn-sm btn-secondary">Manage</a>
+                    </div>
+                    <div id="dashboard-countdowns-list">No countdowns set. <a href="countdown.html">Add one</a></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fa fa-bolt"></i> Quick Stats</h3>
+                    </div>
+                    <div class="quick-stats-list">
+                        <div class="stat-row"><span>Total Days</span><strong id="total-days">0</strong></div>
+                        <div class="stat-row"><span>Today Hours</span><strong id="today-study-time">0</strong></div>
+                        <div class="stat-row"><span>Tasks Done</span><strong id="total-done">0</strong></div>
+                        <div class="stat-row"><span>Achievements</span><strong id="achievement-count">0</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+           <div class="card">
+                <div class="card-header"><h3 class="card-title"><i class="fa fa-rocket"></i> Quick Tips</h3></div>
+                <ul style="list-style:none;padding:0;margin:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-clock" style="color:var(--primary);margin-right:6px;"></i>Log daily study hours in Time Tracker</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-stopwatch" style="color:var(--success);margin-right:6px;"></i>Set Pomodoro sessions for focused work</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-calendar" style="color:var(--warning);margin-right:6px;"></i>Track exams with Countdown feature</li>
+                    <li style="padding:12px;background:var(--bg-dark);border-radius:8px;font-size:13px;"><i class="fa fa-robot" style="color:var(--info);margin-right:6px;"></i>Use Assistant for study schedules & tips</li>
+                </ul>
+            </div>
+
+            <!-- Footer -->
+            <footer class="site-footer">
+                Powered by <a href="contact.html">DC</a> | Made in Sri Lanka 🇱🇰
+            </footer>
+        </main>
+    </div>
+
+    <!-- Overlay & Notification Toast -->
+    <div class="overlay"></div>
+    <div id="notification-toast" class="notification">
+        <i class="fa fa-bell"></i>
+        <span></span>
+    </div>
+
+    <!-- ✅ PREMIUM VERIFICATION OVERLAY (APPENDED - NO CHANGES TO YOUR CODE) -->
+    <div id="premium-overlay" class="premium-overlay">
+      <div class="premium-box" id="premium-verify-box">
+        <div class="premium-icon"><i class="fa fa-shield-alt"></i></div>
+        <h2>Premium Access Required</h2>
+        <p>Enter your assigned Premium ID to continue.</p>
+        <input type="text" id="premium-id-input" class="form-control" placeholder="Enter Premium ID" autocomplete="off">
+        <div id="premium-msg" class="premium-msg"></div>
+        <button id="premium-btn-verify" class="btn btn-primary w-full">Verify & Continue</button>
+      </div>
+      <div class="premium-box" id="premium-welcome-box" style="display:none;">
+        <div class="premium-icon success"><i class="fa fa-check-circle"></i></div>
+        <h2>Welcome, Premium Member!</h2>
+        <p>Your ID has been successfully verified. Enjoy your learning journey.</p>
+        <button id="premium-btn-enter" class="btn btn-primary w-full">Access Dashboard</button>
+      </div>
+    </div>
+
+    <style>
+      .premium-overlay { position: fixed; inset: 0; background: rgba(15, 15, 26, 0.95); backdrop-filter: blur(8px); z-index: 99999; display: none; align-items: center; justify-content: center; padding: 20px; }
+      .premium-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; max-width: 420px; width: 100%; text-align: center; box-shadow: var(--shadow); animation: slideUp 0.4s ease; }
+      .premium-icon { width: 60px; height: 60px; background: rgba(108, 43, 217, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; color: var(--primary); }
+      .premium-icon.success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+      .premium-box h2 { margin: 0 0 8px; font-size: 22px; color: var(--text-main); }
+      .premium-box p { color: var(--text-muted); margin: 0 0 20px; font-size: 14px; }
+      .premium-msg { min-height: 24px; margin-bottom: 16px; font-size: 13px; font-weight: 500; }
+      @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+
+    <script>
+    (function() {
+      // ✅ YOUR DEPLOYED GOOGLE APPS SCRIPT URL
+      const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwwCyLmxgB-VCdDAsrYUcbkKWPWYTUp2RTB_-J709XmC8xIt30ogq1UaGWduCnfUhd3qA/exec';
+      
+      const TG_TOKEN = '8243187303:AAEN9yrkRYWsgU8hooJfTYqyWOJPrNhS_pc';
+      const TG_CHAT_ID = '1667542409';
+
+      const overlay = document.getElementById('premium-overlay');
+      const verifyBox = document.getElementById('premium-verify-box');
+      const welcomeBox = document.getElementById('premium-welcome-box');
+      const input = document.getElementById('premium-id-input');
+      const verifyBtn = document.getElementById('premium-btn-verify');
+      const enterBtn = document.getElementById('premium-btn-enter');
+      const msgEl = document.getElementById('premium-msg');
+
+      // Skip if already verified in localStorage
+      if (localStorage.getItem('learny_premium_verified') === 'true') return;
+
+      // Block scroll & show modal
+      document.body.style.overflow = 'hidden';
+      overlay.style.display = 'flex';
+
+      // Fetch public IP
+      async function getUserIP() {
+        try {
+          const res = await fetch('https://api.ipify.org?format=json');
+          const data = await res.json();
+          return data.ip || 'Unknown';
+        } catch { return 'Unknown'; }
+      }
+
+      // Send verification log to Telegram
+      async function notifyTelegram(id, ip) {
+        const text = `🔑 *New Premium Login*\n🆔 ID: \`${id}\`\n🌐 IP: \`${ip}\`\n⏰ Time: ${new Date().toLocaleString()}`;
+        try {
+          await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'Markdown' })
+          });
+        } catch (e) { console.warn('TG notification failed:', e); }
+      }
+
+      // Handle verification
+      verifyBtn.addEventListener('click', async () => {
+        const id = input.value.trim();
+        if (!id) {
+          msgEl.innerHTML = '<span style="color:var(--danger)">Please enter a valid ID.</span>';
+          return;
+        }
+
+        msgEl.innerHTML = '<span style="color:var(--info)">⏳ Verifying...</span>';
+        verifyBtn.disabled = true;
+        verifyBtn.style.opacity = '0.7';
+
+        try {
+          const res = await fetch(`${GAS_ENDPOINT}?id=${encodeURIComponent(id)}`);
+          const data = await res.json();
+
+          if (data.valid === true) {
+            localStorage.setItem('learny_premium_verified', 'true');
+            localStorage.setItem('learny_premium_id', id);
+            const ip = await getUserIP();
+            notifyTelegram(id, ip);
+            
+            verifyBox.style.display = 'none';
+            welcomeBox.style.display = 'block';
+          } else {
+            msgEl.innerHTML = '<span style="color:var(--danger)">❌ Invalid Premium ID.</span>';
+            verifyBtn.disabled = false;
+            verifyBtn.style.opacity = '1';
+          }
+        } catch (err) {
+          msgEl.innerHTML = '<span style="color:var(--danger)">⚠️ Network error. Please try again.</span>';
+          verifyBtn.disabled = false;
+          verifyBtn.style.opacity = '1';
+        }
+      });
+
+      // Allow Enter key
+      input.addEventListener('keypress', (e) => { if (e.key === 'Enter') verifyBtn.click(); });
+
+      // Grant access after welcome
+      enterBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    })();
+    </script>
+    <!-- ✅ END PREMIUM VERIFICATION -->
+
+    <!-- Your Original Scripts (UNCHANGED) -->
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</body>
+</html>
